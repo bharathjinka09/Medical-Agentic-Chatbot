@@ -2,22 +2,31 @@
 
 An educational medical assistant with retrieval from the bundled historical Gale Encyclopedia of Medicine (2002, Volume 1 A–B), optional Tavily fallback, image observations, speech input/output, and a vanilla JS web UI.
 
+## Demo
+![MedGuide AI demo](docs/demo.png)
+
+## Architecture
+![Medical AI agent architecture diagram](<docs/Medical AI Agent Architecture Infographic.png>)
+
 ## Requirements
-Python 3.11 or 3.12; OpenAI, Pinecone, and Tavily API keys; internet connection. This is a tutorial reference implementation, **not** a clinically validated diagnostic system or HIPAA-compliant deployment.
+Python 3.11 or 3.12; OpenAI, Pinecone, and Tavily API keys; internet connection. This is a reference implementation, **not** a clinically validated diagnostic system or HIPAA-compliant deployment.
 
 ## Start
 ```bash
-conda create -n project python=3.11 -y
+python -m venv venv
 
-conda activate project
+source venv/bin/activate
+
+# On Windows use:
+# venv\Scripts\activate
 
 pip install -r requirements.txt
 
-add  .env
+create a `.env` file based on the provided `.env.example`
 
 # Edit .env with real API keys
 
-python ingest.py --pdf data/medical_book.pdf
+python ingest.py --pdf data/Medical_book.pdf
 
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
@@ -34,7 +43,7 @@ Open **http://127.0.0.1:8000**. API documentation: **http://127.0.0.1:8000/docs*
 - `ingest.py` — chunk and embed every readable PDF page
 - `templates/index.html` — UI
 - `static/style.css`, `static/app.js` — styles and browser controls
-- `data/medical_book.pdf` — user-supplied reference PDF
+- `data/Medical_book.pdf` — user-supplied reference PDF
 
 ## Troubleshooting
 - **Connecting / checking**: run `uvicorn` and open `/api/health` first. Check browser console and backend terminal.
@@ -45,6 +54,6 @@ Open **http://127.0.0.1:8000**. API documentation: **http://127.0.0.1:8000/docs*
 - **Tavily**: optional but needed for external fallback. Without its key, external search is disabled.
 
 ## Security and production limitations
-This project is a functional tutorial scaffold, not a production medical device. Before deploying to real patients: replace shared API token with server-side identity/authentication; add database-backed encrypted conversations and retention/deletion controls; enforce request throttling and upload content verification; implement observability, tests, clinically reviewed emergency triage and evaluation; verify licensing to host/index the Gale PDF; obtain privacy/security/legal review; ensure current authoritative clinical references; and secure the deployment behind HTTPS. Do not send identifiable patient data to third-party APIs without appropriate consent and agreements.
+This project is a functional scaffold, not a production medical device. Before deploying to real patients: replace shared API token with server-side identity/authentication; add database-backed encrypted conversations and retention/deletion controls; enforce request throttling and upload content verification; implement observability, tests, clinically reviewed emergency triage and evaluation; verify licensing to host/index the Gale PDF; obtain privacy/security/legal review; ensure current authoritative clinical references; and secure the deployment behind HTTPS. Do not send identifiable patient data to third-party APIs without appropriate consent and agreements.
 
 The historical book may contain obsolete clinical advice; model instructions do not guarantee safety. Images can be described but cannot confirm or rule out disease. This software does not make diagnosis.
