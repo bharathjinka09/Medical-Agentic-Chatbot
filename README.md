@@ -11,7 +11,7 @@ An educational medical assistant with retrieval from the bundled historical Gale
 ## Requirements
 Python 3.11 or 3.12; OpenAI, Pinecone, and Tavily API keys; internet connection. This is a reference implementation, **not** a clinically validated diagnostic system or HIPAA-compliant deployment.
 
-## Start
+## Steps to run the application
 ```bash
 python -m venv venv
 
