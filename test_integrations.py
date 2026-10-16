@@ -106,6 +106,17 @@ class IntegrationTests(unittest.TestCase):
         self.assertNotEqual(self.settings.active_pinecone_index, original_index)
         self.assertIn('gemini-embedding-001', self.settings.embedding_namespace)
 
+    def test_explicit_gemini_index_is_not_suffixed_twice(self):
+        self.use_gemini()
+        self.settings.pinecone_index = 'medical-agent-demo-gemini'
+        self.assertEqual(self.settings.active_pinecone_index, 'medical-agent-demo-gemini')
+        client = Mock()
+        client.describe_index.return_value.dimension = self.settings.embed_dimensions
+        with patch.object(knowledge, 'clients', return_value=(Mock(), client)):
+            knowledge.ensure_index()
+        client.Index.assert_called_once_with('medical-agent-demo-gemini')
+        client.create_index.assert_not_called()
+
     def test_index_creation_uses_selected_dimensions(self):
         self.use_gemini()
         client = Mock()

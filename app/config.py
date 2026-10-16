@@ -71,7 +71,9 @@ class Settings(BaseSettings):
 
     @property
     def active_pinecone_index(self) -> str:
-        return f'{self.pinecone_index}-gemini' if self.llm_provider == 'gemini' else self.pinecone_index
+        if self.llm_provider == 'gemini' and not self.pinecone_index.endswith('-gemini'):
+            return f'{self.pinecone_index}-gemini'
+        return self.pinecone_index
 
     @property
     def embedding_namespace(self) -> str:

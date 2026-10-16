@@ -11,7 +11,7 @@ An educational medical assistant with retrieval from the bundled historical Gale
 ## Requirements
 Python 3.11 or 3.12; an API key for the selected provider (OpenAI or Gemini) and a Pinecone API key; internet connection. Tavily and Langfuse credentials are optional. This is a reference implementation, **not** a clinically validated diagnostic system or HIPAA-compliant deployment.
 
-## Start
+## Steps to install the application
 ```bash
 python -m venv venv
 
@@ -76,6 +76,8 @@ With the default `PINECONE_INDEX=medical-agent-demo`, OpenAI uses `medical-agent
 To switch back, set `LLM_PROVIDER=openai`, provide `OPENAI_API_KEY`, and restart. OpenAI resumes using its original index, `text-embedding-3-small`, Whisper, and OpenAI TTS. `OPENAI_EMBED_DIMENSIONS` defaults to 1536 and must match that index. Pinecone, optional Tavily search, and optional Langfuse tracing remain independent services, not LLM providers.
 
 ## Langfuse Tracing
+![Langfuse tracing dashboard](docs/langfuse.png)
+
 Install the updated requirements, create a Langfuse project, and configure `.env`:
 
 ```dotenv
