@@ -5,6 +5,7 @@ from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.runnables import RunnableConfig
 from tavily import TavilyClient
 from app.config import settings
 from app.knowledge import search_kb
@@ -59,15 +60,15 @@ def web_search(state):
 
 
 
-def answer(state):
+def answer(state, config: RunnableConfig):
     context = '\n'.join(f"[PDF p.{x['page']}] {x['text']}" for x in state['kb'])
     websites = '\n'.join(f"{x['title']} ({x['url']}): {x['content']}" for x in state.get('web',[]))
     history=[]
     for msg in state.get('history',[])[-8:]:
         history.append(HumanMessage(content=msg['content']) if msg['role']=='user' else AIMessage(content=msg['content']))
     user = f"Question: {state['question']}\nVisual observations (not diagnosis): {state.get('image_description','None')}\nHistorical PDF excerpts:\n{context or 'No relevant PDF excerpts'}\nExternal results:\n{websites or 'No external results'}"
-    llm=ChatOpenAI(model=settings.openai_chat_model,temperature=0.1,api_key=settings.openai_api_key,timeout=45,max_retries=1)
-    response=llm.invoke([SystemMessage(content=SYSTEM),*history,HumanMessage(content=user)])
+    llm=ChatOpenAI(model=settings.chat_model,temperature=0.1,api_key=settings.llm_api_key,base_url=settings.llm_base_url,timeout=45,max_retries=1)
+    response=llm.invoke([SystemMessage(content=SYSTEM),*history,HumanMessage(content=user)],config=config)
     return {'answer':response.content}
 
 

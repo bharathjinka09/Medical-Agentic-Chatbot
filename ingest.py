@@ -4,6 +4,7 @@ import hashlib
 from pathlib import Path
 import fitz
 from app.knowledge import ensure_index, embed
+from app.config import settings
 
 
 def chunks(text, size=1100, overlap=180):
@@ -28,12 +29,12 @@ def main():
                 batch.append((key,content,{'page':page_number,'text':content,'file':pdf.name}))
                 if len(batch) >= 50:
                     vectors = embed([b[1] for b in batch])
-                    index.upsert(vectors=[{'id':b[0],'values':v,'metadata':b[2]} for b,v in zip(batch,vectors)])
+                    index.upsert(vectors=[{'id':b[0],'values':v,'metadata':b[2]} for b,v in zip(batch,vectors)],namespace=settings.embedding_namespace)
                     batch=[]
             if page_number % 50 == 0:
                 print(f'Indexed pages: {page_number}/{len(doc)}',flush=True)
         if batch:
             vectors=embed([b[1] for b in batch])
-            index.upsert(vectors=[{'id':b[0],'values':v,'metadata':b[2]} for b,v in zip(batch,vectors)])
+            index.upsert(vectors=[{'id':b[0],'values':v,'metadata':b[2]} for b,v in zip(batch,vectors)],namespace=settings.embedding_namespace)
     print('Ingestion complete')
 if __name__ == '__main__': main()
